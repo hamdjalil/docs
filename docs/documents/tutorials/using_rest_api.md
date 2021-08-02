@@ -25,7 +25,7 @@ A **document** is a dictionary/object that is JSON serializable with the followi
 - Contains the `_id` field (also called the handle), which identifies the document uniquely across all collections within a fabric. This ID is a combination of the collection name and the document key using the format `{collection}/{key}` (see example below).
 - Contains the `_rev` field. GDN supports MVCC (Multiple Version Concurrency Control) and is capable of storing each document in multiple revisions. Latest revision of a document is indicated by this field. The field is populated by GDN and is not required as input unless you want to validate a document against its current revision.
 
-Here is an example of a valid document:
+Here is an example of a valid jhaavan:
 
 ```json
 {
@@ -318,6 +318,139 @@ Here is an example of a valid document:
     };
 
     run();
+
+    ```
+=== "cURL"
+
+    ``` shell
+    
+    # User Authentication via jwt
+    ## Input : Enter the following command to get jwt key
+  
+    curl --header 'accept:application/json'--header "Content-Type:application/json"   -X POST "https://api-gdn.paas.macrometa.io/_open/auth" -d "{\"email\":\"<user_email\",\"password\":\"user_password\"}"
+  
+    ## Output : a collection with the following format is received, the user_jwt_key needs to be saved and used in every command for authentication
+  
+    {"jwt":"<user_jwt_key>","tenant":"<user_email>","username":"<user_name>"}
+
+    #Create a document collection
+    ## Input : Enter the following command to create a collection named "testcollection" of type 2
+  
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/collection" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer <user_jwt_key>" -d "{ \"name\": \"testcollection\", \"type\": 2}"
+  
+    ## Output : false value for "error" indicates successful execution, all other variables can be used when creating a collection
+  
+    {
+    "error": false,
+    "code": 200,
+    "type": 2,
+    "searchEnabled": false,
+    "name": "spiderman",
+    "isSystem": false,
+    "status": 3,
+    "isSpot": false,
+    "collectionModel": "DOC",
+    "waitForSync": false,
+    "objectId": "<object_id>",
+    "cacheEnabled": false,
+    "keyOptions": {
+      "allowUserKeys": true,
+      "type": "traditional",
+      "lastValue": 0
+    },
+    "globallyUniqueId": "<global_unique_id>",
+    "statusString": "loaded",
+    "id": "<id>",
+    "hasStream": false,
+    "isLocal": false
+    }
+
+    # Insert a document into a collection
+    # document = {'GPA': 3.5, 'first': 'Lola', 'last': 'Martin', '_key': 'Lola'}
+    ## Input: command to insert the document into existing testcollection
+    
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/document/testcollection" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer <user_jwt_key>" -d "{\"GPA\": 3.5, \"first\": \"Lola\", \"last\": \"Martin\", \"_key\": \"Lola\"}"
+    
+    ## Output: Response collection
+    
+    {"_id":"testcollection/Lola","_key":"Lola","_rev":"<_rev_value>"}
+    
+    # Insert multiple documents
+    ## Input : pass an array of collections in data ( -d ) for the same command as above
+    
+    curl -X POST "https://api-gdn.paas.mta.io/_fabric/_system/_api/document/testcollection" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer <user_jwt_key>" -d "[{\"GPA\": 3.2, \"first\": \"Abby\", \"last\": \"Page\", \"_key\": \"Abby\"}, {\"GPA\": 3.6, \"first\": \"John\", \"last\": \"Kim\", \"_key\": \"John\"}, {\"GPA\": 4.0, \"first\": \"Emma\", \"last\": \"Park\", \"_key\": \"Emma\"}]"
+    
+    ## Output: Response collection
+    
+    [{"_id":"testcollection/Abby","_key":"Abby","_rev":"<rev>"},{"_id":"testcollection/John","_key":"John","_rev":"<rev>"},{"_id":"testcollection/Emma","_key":"Emma","_rev":"<rev>"}]
+
+    # Read a document with ID
+    ## Input : read the document "Emma" 
+
+    curl -X GET "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/document/testcollection/Emma" -H "accept: application/json" -H "Authorization: bearer <user_jwt_key>" 
+
+    ## Output : Requested document 
+    {
+    "GPA": 4,
+    "_id": "testcollection/Emma",
+    "_key": "Emma",
+    "_rev": "_cug_8UG--F",
+    "first": "Emma",
+    "last": "Park"
+    }
+
+    # Update a document using ID
+    ## Input : Update John's GPA
+
+    curl -X PATCH "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/document/testcollection/John?keepNull=false&mergeObjects=true&ignoreRevs=true&returnOld=false&returnNew=false&silent=true" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer <user_jwt_key>" -d "{\"GPA\": 3.7, \"first\": \"John\", \"last\": \"Andrews\", \"_key\": \"John\"}"
+
+    ## Output : Empty braces if no error
+
+    {}
+
+    # Update multiple documents
+    ## Input : Specify a collection to update docs in
+
+    curl -X PATCH "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/document/testcollection" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer <user_jwt_key>" -d "[{\"GPA\": 6.7, \"first\": \"John\", \"last\": \"Andrews\", \"_key\": \"John\"},{\"GPA\": 4.6, \"first\": \"Lola\", \"last\": \"Martin\", \"_key\": \"Lola\"}]"
+
+    ## Output : Response array with details of updated documents 
+
+    [{"_id":"testcollection/John","_key":"John","_rev":"<new_rev>","_oldRev":"<old_rev>"},{"_id":"testcollection/Lola","_key":"Lola","_rev":"<new_rev>","_oldRev":"<old_rev>"}]
+
+    # Remove a document 
+    ## Input : Remove document "John" from collection "testcollection"
+
+    curl -X DELETE "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/document/testcollection/John" -H "accept: application/json" -H "Authorization: bearer <user_jwt_key>"
+
+    ## Output : Response collection with details of removed documents
+
+    {"_id":"testcollection/John","_key":"John","_rev":"<rev>"}
+
+    # Remove multiple documents
+    ## Input : Remove Emma and John from testcollection
+
+    curl -X DELETE "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/document/testcollection" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer <user_jwt_key>" -d "[ \"Lola\",\"Emma\"]"
+
+    ## Output : Response array with details of removed documents
+
+    [{"_id":"testcollection/Lola","_key":"Lola","_rev":"<rev>"},{"_id":"testcollection/John","_key":"John","_rev":"<rev>"}]
+
+
+
+
+
+
+
+
+
+
+
+
+    
+   
+  
+
+
 
     ```
 
