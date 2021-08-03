@@ -591,7 +591,7 @@ CRUD Operations can also be done using C8QL
 
     # Output : Response collection
 
-    {"result":[],"hasMore":false,"cached":false,"extra":{"stats":{"writesExecuted":<>,"writesIgnored":0,"scannedFull":0,"scannedIndex":6,"filtered":0,"httpRequests":0,"executionTime":<exec_time>,"peakMemoryUsage":<memory_usage>},"warnings":[]},"error":false,"code":201}
+    {"result":[],"hasMore":false,"cached":false,"extra":{"stats":{"writesExecuted":<>,"writesIgnored":0,"scannedFull":0,"scannedIndex":<>,"filtered":0,"httpRequests":0,"executionTime":<exec_time>,"peakMemoryUsage":<memory_usage>},"warnings":[]},"error":false,"code":201}
 
 
 
@@ -984,7 +984,7 @@ Macrometa GDN is a geo-distributed realtime data service with turnkey global dis
 
     # Output : Response Query
 
-    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"read","parameter":{"@collection":"api_query_tutorial"},"value":"FOR doc IN @@collection RETURN doc","_key":"hamdjalil0_gmail.com.root.hamdjalil0_gmail.com._system.read","type":"c8ql"}}
+    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"read","parameter":{"@collection":"api_query_tutorial"},"value":"FOR doc IN @@collection RETURN doc","_key":"<user_key>","type":"c8ql"}}
 
 
     #Save Insert query
@@ -993,7 +993,7 @@ Macrometa GDN is a geo-distributed realtime data service with turnkey global dis
 
     # Output : Response collection
 
-    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"insertu","parameter":{"@collection":"api_query_tutorial"},"value":"FOR i IN 1..100 INSERT { result: i } INTO @@collection","_key":"hamdjalil0_gmail.com.root.hamdjalil0_gmail.com._system.insertu","type":"c8ql"}}
+    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"insertu","parameter":{"@collection":"api_query_tutorial"},"value":"FOR i IN 1..100 INSERT { result: i } INTO @@collection","_key":"<user_key>","type":"c8ql"}}
 
 
     #Save Update query
@@ -1002,7 +1002,7 @@ Macrometa GDN is a geo-distributed realtime data service with turnkey global dis
 
     # Output : Response collection
 
-    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"updater","parameter":{"@collection":"api_query_tutorial"},"value":"FOR doc IN @@collection FILTER doc.result >= 35 UPDATE doc._key WITH { qualified :true } IN @@collection","_key":"hamdjalil0_gmail.com.root.hamdjalil0_gmail.com._system.updater","type":"c8ql"}}
+    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"updater","parameter":{"@collection":"api_query_tutorial"},"value":"FOR doc IN @@collection FILTER doc.result >= 35 UPDATE doc._key WITH { qualified :true } IN @@collection","_key":"<user_key>","type":"c8ql"}}
 
     #Save Delete Query
 
@@ -1010,7 +1010,7 @@ Macrometa GDN is a geo-distributed realtime data service with turnkey global dis
 
     # Output : Response collection
 
-    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"delete","parameter":{"@collection":"api_query_tutorial"},"value":"FOR c IN @@collection REMOVE c IN @@collection","_key":"zainihsan17_gmail.com.root.zainihsan17_gmail.com._system.delete","type":"c8ql"}}
+    {"error":false,"code":200,"result":{"userid":"<user_id>","tenant":"<tenant>","fabric":"<fabric>","name":"delete","parameter":{"@collection":"api_query_tutorial"},"value":"FOR c IN @@collection REMOVE c IN @@collection","_key":"<user_key>","type":"c8ql"}}
 
     #Update Saved Query
 
