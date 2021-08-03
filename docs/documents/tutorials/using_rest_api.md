@@ -514,84 +514,83 @@ CRUD Operations can also be done using C8QL
         "query": "FOR c IN testcollection REMOVE c IN testcollection"
     })
     ```
-
 === "cURL"
 
-   ``` shell
-    
+    ``` shell
     # User Authentication via jwt
-    # User Authentithrough jwtcation 
-  
+    # User Authentithrough jwtcation
     curl --header 'accept:application/json'--header "Content-Type:application/json"   -X POST "https://api-gdn.paas.macrometa.io/_open/auth" -d "{\"email\":\"user_email\",\"password\":\"user_password\"}"
-  
     # Output : a collection with the following format is received, the user_jwt_key needs to be saved and used in every command for authentication
-  
     {"jwt":"<user_jwt_key>","tenant":"<user_email>","username":"<user_name>"}
 
-
     #Insert document into Collection by query
-    
+  
     #Query using "INSERT{'name' : 'Julie', 'company' : 'ABC', '_key' : 'Julie'}" \ "INTO testcollection"
-
-    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/cursor" -H "accept: application/json" -H "Content-Type: application/json" -H  "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTk0NDk2NTkyM2UrNiwiZXhwIjoxNjI3ODU5Mzk0LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.XScvcFuNTZiY7JBmNHFkSvbwdA0_PgF5Yau17Fea5vQ=" -d "{ \"query\": \"INSERT{'name' : 'Julie', 'company' : 'ABC', '_key' : 'Julie'} INTO testcollection\"}" 
-
+ 
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/cursor" -H "accept: application/json" -H "Content-Type: application/json" -H  "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTk0NDk2NTkyM2UrNiwiZXhwIjoxNjI3ODU5Mzk0LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.XScvcFuNTZiY7JBmNHFkSvbwdA0_PgF5Yau17Fea5vQ=" -d "{ \"query\": \"INSERT{'name' : 'Julie', 'company' : 'ABC', '_key' : 'Julie'} INTO testcollection\"}"
+ 
     # Read document within the collection
-
+ 
     curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/query" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTA1NzgzNTc4ZSs2LCJleHAiOjE2Mjc4NTkzMDUsImlzcyI6Im1hY3JvbWV0YSIsInByZWZlcnJlZF91c2VybmFtZSI6InJvb3QiLCJzdWIiOiJ6YWluaWhzYW4xN19nbWFpbC5jb20iLCJ0ZW5hbnQiOiJ6YWluaWhzYW4xN19nbWFpbC5jb20ifQ==.udcJ0KFZUaEM0Lu8i7j48Gx3EUgMUnxfqy-pvQr139M=" -d "{\"query\": \"FOR doc IN doc RETURN doc\"}"
-
-    # Output: ["Error": False] elaborating successful execution
+ 
+    # Output: ["error": false] indicates successful execution
 
     {
-      "error": false,
-      "code" : 200, 
-      "parsed": true,
-      "collections": [
-      "doc"
-      ],
-      "bindVars": [],
-      "ast": [
-      {
-          "type": "root",
-          "subNodes": [
-          {
-              "type": "for",
-              "subNodes": [
-              {
-                  "type": "variable",
-                  "name": "doc",
-                  "id": 0
-              },
-              {
-                  "type": "collection",
-                  "name": "doc"
-              },
-              {
-                  "type": "no-op"
-              }
-            ]
-          },
-          {
-            "type": "return",
-              "subNodes": [
-              {
-                  "type": "reference",
-                  "name": "doc",
-                  "id": 0
-              }
-            ]
-          }
-        ]
-      }
-      ]
+     "error": false,
+     "code" : 200,
+     "parsed": true,
+     "collections": [
+     "doc"
+     ],
+     "bindVars": [],
+     "ast": [
+     {
+         "type": "root",
+         "subNodes": [
+         {
+             "type": "for",
+             "subNodes": [
+             {
+                 "type": "variable",
+                 "name": "doc",
+                 "id": 0
+             },
+             {
+                 "type": "collection",
+                 "name": "doc"
+             },
+             {
+                 "type": "no-op"
+             }
+           ]
+         },
+         {
+           "type": "return",
+             "subNodes": [
+             {
+                 "type": "reference",
+                 "name": "doc",
+                 "id": 0
+             }
+           ]
+         }
+       ]
      }
-  
-   #Delete Document in the collection
+     ]
+    }
 
-   curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/cursor" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTk0NDk2NTkyM2UrNiwiZXhwIjoxNjI3ODU5Mzk0LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.XScvcFuNTZiY7JBmNHFkSvbwdA0_PgF5Yau17Fea5vQ=" -d "{ \"query\": \"FOR c IN testcollection REMOVE c IN testcollection\" }"
+    #Delete Document in the collection
+ 
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/cursor" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTk0NDk2NTkyM2UrNiwiZXhwIjoxNjI3ODU5Mzk0LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.XScvcFuNTZiY7JBmNHFkSvbwdA0_PgF5Yau17Fea5vQ=" -d "{ \"query\": \"FOR c IN testcollection REMOVE c IN testcollection\" }"
 
 
 
+ 
+
+    
     ```
+
+
     
 ## Query as API
 
