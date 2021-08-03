@@ -515,6 +515,84 @@ CRUD Operations can also be done using C8QL
     })
     ```
 
+=== "cURL"
+
+   ``` shell
+    
+    # User Authentication via jwt
+    # User Authentithrough jwtcation 
+  
+    curl --header 'accept:application/json'--header "Content-Type:application/json"   -X POST "https://api-gdn.paas.macrometa.io/_open/auth" -d "{\"email\":\"user_email\",\"password\":\"user_password\"}"
+  
+    # Output : a collection with the following format is received, the user_jwt_key needs to be saved and used in every command for authentication
+  
+    {"jwt":"<user_jwt_key>","tenant":"<user_email>","username":"<user_name>"}
+
+
+    #Insert document into Collection by query
+    
+    #Query using "INSERT{'name' : 'Julie', 'company' : 'ABC', '_key' : 'Julie'}" \ "INTO testcollection"
+
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/cursor" -H "accept: application/json" -H "Content-Type: application/json" -H  "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTk0NDk2NTkyM2UrNiwiZXhwIjoxNjI3ODU5Mzk0LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.XScvcFuNTZiY7JBmNHFkSvbwdA0_PgF5Yau17Fea5vQ=" -d "{ \"query\": \"INSERT{'name' : 'Julie', 'company' : 'ABC', '_key' : 'Julie'} INTO testcollection\"}" 
+
+    # Read document within the collection
+
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/query" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTA1NzgzNTc4ZSs2LCJleHAiOjE2Mjc4NTkzMDUsImlzcyI6Im1hY3JvbWV0YSIsInByZWZlcnJlZF91c2VybmFtZSI6InJvb3QiLCJzdWIiOiJ6YWluaWhzYW4xN19nbWFpbC5jb20iLCJ0ZW5hbnQiOiJ6YWluaWhzYW4xN19nbWFpbC5jb20ifQ==.udcJ0KFZUaEM0Lu8i7j48Gx3EUgMUnxfqy-pvQr139M=" -d "{\"query\": \"FOR doc IN doc RETURN doc\"}"
+
+    # Output: ["Error": False] elaborating successful execution
+
+    {
+      "error": false,
+      "code" : 200, 
+      "parsed": true,
+      "collections": [
+      "doc"
+      ],
+      "bindVars": [],
+      "ast": [
+      {
+          "type": "root",
+          "subNodes": [
+          {
+              "type": "for",
+              "subNodes": [
+              {
+                  "type": "variable",
+                  "name": "doc",
+                  "id": 0
+              },
+              {
+                  "type": "collection",
+                  "name": "doc"
+              },
+              {
+                  "type": "no-op"
+              }
+            ]
+          },
+          {
+            "type": "return",
+              "subNodes": [
+              {
+                  "type": "reference",
+                  "name": "doc",
+                  "id": 0
+              }
+            ]
+          }
+        ]
+      }
+      ]
+     }
+  
+   #Delete Document in the collection
+
+   curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/cursor" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTk0NDk2NTkyM2UrNiwiZXhwIjoxNjI3ODU5Mzk0LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.XScvcFuNTZiY7JBmNHFkSvbwdA0_PgF5Yau17Fea5vQ=" -d "{ \"query\": \"FOR c IN testcollection REMOVE c IN testcollection\" }"
+
+
+
+    ```
+    
 ## Query as API
 
 Globally distributed applications need a geo distributed fast data platform that can transparently replicate the data anywhere in the world to enable the applications to operate on a copy of the data that's close to its users. Similarly the applications need geo-replicated and local streams to handle pub-sub, ETL and real-time updates from the fast data platform.
@@ -874,5 +952,63 @@ Macrometa GDN is a geo-distributed realtime data service with turnkey global dis
     };
 
     run();
+
+    ```
+    
+    
+=== "cURL"
+
+    ``` shell
+    
+    #Save read query
+
+    #Query  "{ \"query\": { \"name\": \"read\", \"parameter\": {\"@collection\": \"api_query_tutorial\"}, \"value\": \"FOR doc IN @@collection RETURN doc\" }}"
+
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/restql" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODE2MTk0NDk2NTkyM2UrNiwiZXhwIjoxNjI3ODU5Mzk0LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.XScvcFuNTZiY7JBmNHFkSvbwdA0_PgF5Yau17Fea5vQ=" -d "{ \"query\": { \"name\": \"read\", \"parameter\": {\"@collection\": \"api_query_tutorial\"}, \"value\": \"FOR doc IN @@collection RETURN doc\" }}"
+
+
+    #Save Insert query
+
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/restql" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODU5NDg3NTkwMDQzNmUrNiwiZXhwIjoxNjI3OTAyNjg3LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.TfsfRusDI6WcV2PKgCCVcxqOQsUtAnVOkk13x0G6FuY=" -d "{ \"query\": { \"name\": \"insert\", \"parameter\": {\"@collection\": \"api_query_tutorial\"}, \"value\": \"FOR i IN 1..100 INSERT { result: i } INTO @@collection\" }}"
+
+    #Save Update query
+
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/restql" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODU5NDg3NTkwMDQzNmUrNiwiZXhwIjoxNjI3OTAyNjg3LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.TfsfRusDI6WcV2PKgCCVcxqOQsUtAnVOkk13x0G6FuY=" -d "{ \"query\": { \"name\": \"update\", \"parameter\": {\"@collection\": \"api_query_tutorial\"}, \"value\": \"FOR doc IN @@collection FILTER doc.result >= 35 UPDATE doc._key WITH { qualified :true } IN @@collection\" }}"
+
+    #Save Delete Query
+
+    curl -X POST "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/restql" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODU5NDg3NTkwMDQzNmUrNiwiZXhwIjoxNjI3OTAyNjg3LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.TfsfRusDI6WcV2PKgCCVcxqOQsUtAnVOkk13x0G6FuY=" -d "{ \"query\": { \"name\": \"delete\", \"parameter\": {\"@collection\": \"api_query_tutorial\"}, \"value\": \"FOR c IN @@collection REMOVE c IN @@collection\" }}"
+
+    #Update Saved Query
+
+    curl -X PUT "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/restql/read" -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODU5NDg3NTkwMDQzNmUrNiwiZXhwIjoxNjI3OTAyNjg3LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.TfsfRusDI6WcV2PKgCCVcxqOQsUtAnVOkk13x0G6FuY=" -d "{ \"query\": { \"parameter\": {\"@collection\": \"api_query_tutorial\"}, \"value\": \"FOR doc IN @@collection RETURN doc\" }}"
+
+    #Delete Saved Query
+
+    curl -X DELETE "https://api-gdn.paas.macrometa.io/_fabric/_system/_api/restql/read" -H "accept: application/json" -H "Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjEuNjI3ODU5NDg3NTkwMDQzNmUrNiwiZXhwIjoxNjI3OTAyNjg3LCJpc3MiOiJtYWNyb21ldGEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJyb290Iiwic3ViIjoiaGFtZGphbGlsMF9nbWFpbC5jb20iLCJ0ZW5hbnQiOiJoYW1kamFsaWwwX2dtYWlsLmNvbSJ9.TfsfRusDI6WcV2PKgCCVcxqOQsUtAnVOkk13x0G6FuY="
+
+ 
+ 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+   
+  
+
+
 
     ```
